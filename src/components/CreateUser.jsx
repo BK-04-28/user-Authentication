@@ -12,12 +12,10 @@ function CreateUser() {
   });
 
   const [message, setMessage] = useState('');
-  const [showHomeButton, setShowHomeButton] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setShowHomeButton(false);
     setMessage('');
   };
 
@@ -28,17 +26,17 @@ function CreateUser() {
     const phoneRegex = /^\d{10}$/;
 
     if (!emailRegex.test(email)) {
-      setMessage(' Invalid email format');
+      setMessage('Invalid email format');
       return false;
     }
 
     if (password.length < 6) {
-      setMessage(' Password must be at least 6 characters');
+      setMessage('Password must be at least 6 characters');
       return false;
     }
 
     if (!phoneRegex.test(phone)) {
-      setMessage(' Phone number must be exactly 10 digits');
+      setMessage('Phone number must be exactly 10 digits');
       return false;
     }
 
@@ -54,23 +52,19 @@ function CreateUser() {
     const emailExists = users.find(user => user.email === formData.email);
 
     if (emailExists) {
-      setMessage(' Email already exists!');
-      setShowHomeButton(false);
+      setMessage('Email already exists!');
       return;
     }
 
     users.push(formData);
     localStorage.setItem('users', JSON.stringify(users));
-    setMessage('User created successfully!');
-    setShowHomeButton(true);
 
-    setFormData({
-      fname: '',
-      lname: '',
-      email: '',
-      phone: '',
-      password: '',
-    });
+    setMessage('User created successfully! Redirecting...');
+    
+    // Automatically navigate to home page after successful user creation
+    setTimeout(() => {
+      navigate('/home');
+    }, 1500);
   };
 
   return (
@@ -134,13 +128,6 @@ function CreateUser() {
        <p className={`info-msg ${message.includes('success') ? 'success-msg' : 'error-msg'}`}>
         {message}
        </p>
-        )}
-
-
-      {showHomeButton && (
-        <button className="go-login" onClick={() => navigate('/home')}>
-          Go to HomePage
-        </button>
       )}
     </div>
   );
